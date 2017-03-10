@@ -2,11 +2,12 @@ package csms.services;
 
 import org.springframework.stereotype.Service;
 
-@Service("autoSyncService")
-public class AutoSyncService {
+@Service("jhAutoSyncService")
+public class JhAutoSyncService implements JhAutoSyncInterface {
 
 
-    public boolean autoSync(int userid, String driveId1, String driveId2 ) {
+    @Override
+    public boolean autoSync(int userid, String driveId1, String driveId2) {
         boolean syncOk = false;
 
         System.out.println("AutoSync starting...");
