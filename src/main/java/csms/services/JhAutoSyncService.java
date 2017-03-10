@@ -15,6 +15,8 @@ public class JhAutoSyncService implements JhAutoSyncInterface {
         System.out.println("driveId1: " + driveId1);
         System.out.println("driveId2: " + driveId2);
 
+        //Get File Mapping from Base
+
         //Get File Mapping drive1
 
         //Get File Mapping drive2

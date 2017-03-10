@@ -41,11 +41,14 @@ public class ApplicationConsole {
         JhFile strucFile6 = new JhFile("test2.txt", time2_2, "gdrive1", false);
         JhFile strucFile7 = new JhFile("test3.txt", time3_2, "gdrive1", false);
         JhFile strucFile8 = new JhFile("newGDriveFile.txt", time1_1, "gdrive1", false);
+        JhFile strucFile9 = new JhFile("newDropbBoxFile.txt", time1_1, "dropbox1", false);
 
         JhFileStructure baseFS = new JhFileStructure(strucFile1,strucFile2,strucFile3,strucFile4);
         JhFileStructure gDriveFS = new JhFileStructure(strucFile5,strucFile6,strucFile7,strucFile8);
+        JhFileStructure dropBoxFS = new JhFileStructure(strucFile9);
 
         baseFS.mergeFileStructures(gDriveFS);
+        baseFS.mergeFileStructures(dropBoxFS);
         System.out.println(baseFS);
     }
 

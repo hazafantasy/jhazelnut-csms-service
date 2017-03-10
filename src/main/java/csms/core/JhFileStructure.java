@@ -9,14 +9,15 @@ public class JhFileStructure {
 
     private Map<String, JhFile> files;
 
-    //public JhFileStructure(String jsonFileStructure) {
-        //files = new HashSet<>();
-        //parseJSON(jsonFileStructure);
-    //}
-
     public JhFileStructure(JhFile... arrayFileStructure){
         files = new HashMap<>();
         array2Set(arrayFileStructure);
+    }
+
+    private void array2Set(JhFile[] arrayFileStructure) {
+        for(JhFile file: arrayFileStructure){
+            files.put(file.getPath(),file);
+        }
     }
 
     /**
@@ -53,16 +54,12 @@ public class JhFileStructure {
         files.putAll(otherFileMap);
     }
 
+    public void applyFileStructure2CloudStorage(JhCloudStorage cloudStorage) {
 
+    }
 
     public Map<String, JhFile> getFilesMap() {
         return files;
-    }
-
-    private void array2Set(JhFile[] arrayFileStructure) {
-        for(JhFile file: arrayFileStructure){
-            files.put(file.getPath(),file);
-        }
     }
 
     @Override

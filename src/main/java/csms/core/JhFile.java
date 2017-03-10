@@ -35,7 +35,6 @@ public class JhFile {
     }
 
 
-
     public String getPath() {
         return path;
     }
@@ -50,23 +49,6 @@ public class JhFile {
 
     public boolean isDeleteCandidate() {
         return isDeleteCandidate;
-    }
-
-    @Override
-    public boolean equals(Object obj){
-        //Check if these are same class type
-        if( !(obj instanceof JhFile) ){
-            return false;
-        }
-
-        //Check if they point to same object in memory
-        if(obj==this){
-            return true;
-        }
-
-        //Compare fields and return equals value
-        JhFile jhFile = (JhFile)obj;
-        return this.path.equals(jhFile.getPath());
     }
 
     /**
@@ -109,8 +91,25 @@ public class JhFile {
         return newFile;
     }
 
-//    @Override
-//    public String toString(){
-//
-//    }
+    public String download2Box(){
+        return "";
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        //Check if these are same class type
+        if( !(obj instanceof JhFile) ){
+            return false;
+        }
+
+        //Check if they point to same object in memory
+        if(obj==this){
+            return true;
+        }
+
+        //Compare fields and return equals value
+        JhFile jhFile = (JhFile)obj;
+        return this.path.equals(jhFile.getPath());
+    }
+
 }
