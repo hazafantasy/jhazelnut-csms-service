@@ -1,9 +1,12 @@
 package csms;
 
+import csms.core.JhAction;
+import csms.core.JhActionList;
 import csms.core.JhFile;
 import csms.core.JhFileStructure;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ApplicationConsole {
 
@@ -41,15 +44,34 @@ public class ApplicationConsole {
         JhFile strucFile6 = new JhFile("test2.txt", time2_2, "gdrive1", false);
         JhFile strucFile7 = new JhFile("test3.txt", time3_2, "gdrive1", false);
         JhFile strucFile8 = new JhFile("newGDriveFile.txt", time1_1, "gdrive1", false);
-        JhFile strucFile9 = new JhFile("newDropbBoxFile.txt", time1_1, "dropbox1", false);
+        JhFile strucFile9 = new JhFile("newDropBoxFile.txt", time1_1, "dropbox1", false);
 
         JhFileStructure baseFS = new JhFileStructure(strucFile1,strucFile2,strucFile3,strucFile4);
         JhFileStructure gDriveFS = new JhFileStructure(strucFile5,strucFile6,strucFile7,strucFile8);
-        JhFileStructure dropBoxFS = new JhFileStructure(strucFile9);
+        JhFileStructure dropBoxFS = new JhFileStructure(strucFile1,strucFile2,strucFile3,strucFile4,strucFile9);
 
         baseFS.mergeFileStructures(gDriveFS);
         baseFS.mergeFileStructures(dropBoxFS);
+        System.out.println("***************Testing File Structure Merge Functionality********************************");
+        //identical.txt: "deleteCandidate":false, "newFile":false, "mainSourceDriveId":"base"
+        //test2.txt: "deleteCandidate":false, "newFile":false, "mainSourceDriveId":"base"
+        //test3.txt: "deleteCandidate":false, "newFile":false, "mainSourceDriveId":"gdrive1"
+        //file2Delete.txt: "deleteCandidate":true, "newFile":false, "mainSourceDriveId":"base"
+        //newGDriveFile.txt: "deleteCandidate":false, "newFile":true, "mainSourceDriveId":"gdrive1"
+        //newDropBoxFile.txt: "deleteCandidate":false, "newFile":true, "mainSourceDriveId":"dropbox1"
         System.out.println(baseFS);
+
+        JhActionList actions1 = gDriveFS.mergeFileStructures(baseFS);
+        System.out.println("****************Testing Actions List: 1-2 drives. GDrive*********************************");
+        //UPDATE - test2.txt - base
+        //CREATE - newDropBoxFile.txt - dropbox1
+        System.out.println(actions1);
+
+        JhActionList actions2 = dropBoxFS.mergeFileStructures(baseFS);
+        System.out.println("****************Testing Actions List: 2-2 drives. DropBox********************************");
+        //UPDATE - test3.txt - gdrive1
+        //CREATE - newGDriveFile.txt - gdrive1
+        System.out.println(actions2);
     }
 
 }

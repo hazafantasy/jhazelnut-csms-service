@@ -24,38 +24,59 @@ public class JhFileStructure {
      *
      * @param otherFileStruct
      */
-    public void mergeFileStructures(JhFileStructure otherFileStruct){
+    public JhActionList mergeFileStructures(JhFileStructure otherFileStruct){
         Map<String, JhFile> otherFileMap = new HashMap<>(otherFileStruct.getFilesMap());
         Map<String, JhFile> changeCandidateFiles = new HashMap<>();
+        JhActionList actions2Apply = new JhActionList();
         for(String filePath: this.files.keySet()){//Iterate each file in this file structure
             JhFile thisFile = files.get(filePath);
             if(otherFileMap.containsKey(filePath)) {//This file exists
                 JhFile otherFile = otherFileMap.get(filePath);
+                otherFileMap.remove(filePath);
                 if(!thisFile.equalsInTimeRange(otherFile)) {//They are different Files
                     JhFile mostUpdatedFile = thisFile.compareJhFiles(otherFile);
                     changeCandidateFiles.put(filePath, mostUpdatedFile);
-                    otherFileMap.remove(filePath);
+                    if(mostUpdatedFile.isDeleteCandidate()){
+                        actions2Apply.addAction(JhAction.JhActionType.DELETE, mostUpdatedFile);
+                    } else {
+                        actions2Apply.addAction(JhAction.JhActionType.UPDATE, mostUpdatedFile);
+                    }
+                } else {//The files are considered to be equal
+
                 }
             } else {//This file may be a DELETE candidate
-                JhFile deleteCandidateFile = new JhFile(
-                        thisFile.getPath(),
-                        thisFile.getLastEditDateTime(),
-                        thisFile.getMainSourceDriveId(),
-                        true
-                );
-                changeCandidateFiles.put(filePath, deleteCandidateFile);
+                if(!thisFile.isNewFile()) {//Change it to Delete Candidate if this file is not new
+                    JhFile deleteCandidateFile = new JhFile(
+                            thisFile.getPath(),
+                            thisFile.getLastEditDateTime(),
+                            thisFile.getMainSourceDriveId(),
+                            true
+                    );
+                    changeCandidateFiles.put(filePath, deleteCandidateFile);
+                    actions2Apply.addAction(JhAction.JhActionType.DELETE, deleteCandidateFile);
+                }
             }
         }//End iteration in this File Structure
 
         // Replace all the values to update
         files.putAll(changeCandidateFiles);
 
-        //The remanent files should be candidates for Upload
-        files.putAll(otherFileMap);
-    }
+        //The remanent files should be candidates for Create
+        //Update the list of actions2apply with the remanent files
+        for(String filePath: otherFileMap.keySet()) {
+            JhFile otherFile = otherFileMap.get(filePath);
+            if(!otherFile.isDeleteCandidate()) {
+                JhFile newFile = new JhFile(
+                        otherFile.getPath(), otherFile.getLastEditDateTime(),
+                        otherFile.getMainSourceDriveId(), otherFile.isDeleteCandidate(),
+                        true, otherFile.isFileOnTempoRepo(), otherFile.getTempoRepoPath()
+                );
+                files.put(filePath, newFile);
+                actions2Apply.addAction(JhAction.JhActionType.CREATE, newFile);
+            }
+        }
 
-    public void applyFileStructure2CloudStorage(JhCloudStorage cloudStorage) {
-
+        return actions2Apply;
     }
 
     public Map<String, JhFile> getFilesMap() {

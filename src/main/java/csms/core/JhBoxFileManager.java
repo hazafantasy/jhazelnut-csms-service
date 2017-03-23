@@ -2,7 +2,11 @@ package csms.core;
 
 public class JhBoxFileManager {
 
-    public static String getBoxPath4User(String userId) {
+    public static String getTempoRepoPath4User() {
+        return getTempoRepoPath4User("1");
+    }
+
+    public static String getTempoRepoPath4User(String userId) {
         return "/home/hmojica/" + userId + "/";
     }
 

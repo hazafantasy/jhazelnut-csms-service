@@ -5,11 +5,14 @@ import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class JhFile {
+
     private String path;
     private LocalDateTime lastEditDateTime;
     private String mainSourceDriveId;
     private boolean isDeleteCandidate;
-
+    private boolean isNewFile;
+    private boolean isFileOnTempoRepo;
+    private String tempoRepoPath;
     /**
      * Set a time offset of 2 minutes.
      * Between these offsset time two different files with the same name
@@ -21,19 +24,46 @@ public class JhFile {
         this(   sourceFile.getPath(),
                 sourceFile.getLastEditDateTime(),
                 sourceFile.getMainSourceDriveId(),
-                sourceFile.isDeleteCandidate);
+                sourceFile.isDeleteCandidate,
+                sourceFile.isNewFile(),
+                sourceFile.isFileOnTempoRepo(),
+                sourceFile.getTempoRepoPath());
+    }
+    public JhFile(String path,
+                  LocalDateTime lastEditDateTime,
+                  String mainSourceDriveId,
+                  boolean isDeleteCandidate){
+        this(path, lastEditDateTime, mainSourceDriveId, isDeleteCandidate,
+        false, false, "");
     }
 
     public JhFile(String path,
                   LocalDateTime lastEditDateTime,
                   String mainSourceDriveId,
-                  boolean isDeleteCandidate){
+                  boolean isDeleteCandidate,
+                  boolean isNewFile,
+                  boolean isFileOnTempoRepo,
+                  String tempoRepoPath) {
         this.path = path;
         this.lastEditDateTime = lastEditDateTime;
         this.mainSourceDriveId = mainSourceDriveId;
         this.isDeleteCandidate = isDeleteCandidate;
+        this.isNewFile = isNewFile;
+        this.isFileOnTempoRepo = isFileOnTempoRepo;
+        this.tempoRepoPath = tempoRepoPath;
     }
 
+    public boolean isNewFile() {
+        return isNewFile;
+    }
+
+    public String getTempoRepoPath() {
+        return tempoRepoPath;
+    }
+
+    public boolean isFileOnTempoRepo() {
+        return isFileOnTempoRepo;
+    }
 
     public String getPath() {
         return path;
@@ -91,9 +121,6 @@ public class JhFile {
         return newFile;
     }
 
-    public String download2Box(){
-        return "";
-    }
 
     @Override
     public boolean equals(Object obj){

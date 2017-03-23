@@ -1,10 +1,15 @@
-package csms.services;
+package csms.service;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service("jhAutoSyncService")
-public class JhAutoSyncService implements JhAutoSyncInterface {
+@Scope("session")
+public class JhAutoSyncServiceImpl implements JhAutoSyncService {
 
+    public JhAutoSyncServiceImpl() {
+        System.out.println("JhAutoSyncServiceImpl created...");
+    }
 
     @Override
     public boolean autoSync(int userid, String driveId1, String driveId2) {
@@ -26,5 +31,11 @@ public class JhAutoSyncService implements JhAutoSyncInterface {
         return syncOk;
     }
 
+    @Override
+    public boolean autoSyncAll(int userid) {
 
+
+
+        return false;
+    }
 }

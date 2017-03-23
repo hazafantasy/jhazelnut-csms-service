@@ -1,4 +1,4 @@
-package csms.beans;
+package csms.bean;
 
 public class JhCSMSResponseBean {
     private String val;
