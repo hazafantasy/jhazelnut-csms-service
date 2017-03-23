@@ -9,15 +9,27 @@ public class JhFileStructure {
 
     private Map<String, JhFile> files;
 
-    public JhFileStructure(JhFile... arrayFileStructure){
+    public JhFileStructure() {
         files = new HashMap<>();
-        array2Set(arrayFileStructure);
     }
 
-    private void array2Set(JhFile[] arrayFileStructure) {
-        for(JhFile file: arrayFileStructure){
-            files.put(file.getPath(),file);
+    public JhFileStructure(JhFile... arrayFileStructure){
+        files = new HashMap<>();
+        addArrayToFiles(arrayFileStructure);
+    }
+
+    private void addArrayToFiles(JhFile[] arrayFileStructure) {
+        if(files != null) {
+            for (JhFile file : arrayFileStructure) {
+                files.put(file.getPath(), file);
+            }
+        } else {
+            //Log Error
         }
+    }
+
+    public void addJhFile(JhFile jhFile) {
+        addArrayToFiles(new JhFile[] {jhFile});
     }
 
     /**
@@ -25,7 +37,7 @@ public class JhFileStructure {
      * @param otherFileStruct
      */
     public JhActionList mergeFileStructures(JhFileStructure otherFileStruct){
-        Map<String, JhFile> otherFileMap = new HashMap<>(otherFileStruct.getFilesMap());
+        Map<String, JhFile> otherFileMap = new HashMap<>(otherFileStruct.getFiles());
         Map<String, JhFile> changeCandidateFiles = new HashMap<>();
         JhActionList actions2Apply = new JhActionList();
         for(String filePath: this.files.keySet()){//Iterate each file in this file structure
@@ -79,7 +91,7 @@ public class JhFileStructure {
         return actions2Apply;
     }
 
-    public Map<String, JhFile> getFilesMap() {
+    public Map<String, JhFile> getFiles() {
         return files;
     }
 
@@ -91,7 +103,7 @@ public class JhFileStructure {
             json = mapper.writeValueAsString(files);
         } catch (Exception ex) {
             ex.printStackTrace();
-            json = "ERROR mapping to JSON";
+            json = "ERROR mapping JhFileStructure to JSON";
         }
         return json;
     }

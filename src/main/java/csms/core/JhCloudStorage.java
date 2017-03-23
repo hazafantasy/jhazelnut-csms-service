@@ -1,12 +1,35 @@
 package csms.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public abstract class JhCloudStorage {
-    private String cloudStorageId;
-    private JhFileStructure jhFileStructure = null;
-    private boolean fsFetched = false;
+    protected String cloudStorageId;
+    protected JhFileStructure jhFileStructure;
+    protected String ACCESS_TOKEN;
+    protected boolean fsFetched;
 
     public JhCloudStorage(String cloudStorageId) {
         this.cloudStorageId = cloudStorageId;
+        retrieveCloudStorageData();
+    }
+
+    public boolean isFsFetched() {
+        return fsFetched;
+    }
+
+    public String getCloudStorageId() {
+        return cloudStorageId;
+    }
+
+    protected void retrieveCloudStorageData() {
+        //************************************
+        //Dummy code to be deleted
+        if(cloudStorageId.startsWith("dropBox")) {
+            ACCESS_TOKEN = "Q2kIvxC3egcAAAAAAAB6djAoh-nOSaV_XdvtvrkpNTMTfaZwLqHLzCQFmqeXfpUH";
+        } else if(cloudStorageId.startsWith("gDrive")) {
+
+        }
+        //************************************
     }
 
     public JhFileStructure getFileStructure() {
@@ -31,6 +54,19 @@ public abstract class JhCloudStorage {
                 updateFile(fileDownloaderWrapper(action.getFile()));
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        String json;
+        try {
+            json = mapper.writeValueAsString(this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            json = "ERROR mapping JhCloudStorage to JSON";
+        }
+        return json;
     }
 
     private JhFile fileDownloaderWrapper(JhFile file) {

@@ -1,5 +1,6 @@
 package csms.service;
 
+import csms.model.User;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

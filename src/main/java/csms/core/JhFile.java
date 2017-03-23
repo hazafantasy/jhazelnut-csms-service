@@ -21,14 +21,17 @@ public class JhFile {
     private long offsetMinutes = 5L;
 
     public JhFile(JhFile sourceFile){
-        this(   sourceFile.getPath(),
-                sourceFile.getLastEditDateTime(),
-                sourceFile.getMainSourceDriveId(),
-                sourceFile.isDeleteCandidate,
-                sourceFile.isNewFile(),
-                sourceFile.isFileOnTempoRepo(),
+            this(sourceFile.getPath(), sourceFile.getLastEditDateTime(),
+                sourceFile.getMainSourceDriveId(), sourceFile.isDeleteCandidate,
+                sourceFile.isNewFile(), sourceFile.isFileOnTempoRepo(),
                 sourceFile.getTempoRepoPath());
     }
+
+    public JhFile(String path, LocalDateTime lastEditDateTime, String mainSourceDriveId) {
+        this(path, lastEditDateTime, mainSourceDriveId,false, false,
+                false, "");
+    }
+
     public JhFile(String path,
                   LocalDateTime lastEditDateTime,
                   String mainSourceDriveId,

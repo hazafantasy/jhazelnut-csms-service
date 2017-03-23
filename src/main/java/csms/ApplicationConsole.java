@@ -1,9 +1,7 @@
 package csms;
 
-import csms.core.JhAction;
-import csms.core.JhActionList;
-import csms.core.JhFile;
-import csms.core.JhFileStructure;
+import csms.core.*;
+import csms.core.cloud.storage.implementation.DropBoxCloudStorage;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -72,6 +70,13 @@ public class ApplicationConsole {
         //UPDATE - test3.txt - gdrive1
         //CREATE - newGDriveFile.txt - gdrive1
         System.out.println(actions2);
+
+        //*****************************************************************************
+        //Testing JhDropBoxCloudStorage
+        JhCloudStorage dropBoxCloudStorage = new DropBoxCloudStorage("dropBox1");
+        System.out.println("****************Testing JhDropBoxCloudStorage********************************************");
+        dropBoxCloudStorage.fetchFileStructure();
+        System.out.println(dropBoxCloudStorage);
     }
 
 }
