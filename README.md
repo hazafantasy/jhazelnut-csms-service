@@ -3,8 +3,8 @@ This is the main service for the jhazelnut-csms platform.
 
 # How to run
 
-Clone from here, build using gradle (or if you don't have) gradle installes you could use the gradle wrapper.
-Run the .jar generated
+Clone from here, build using gradle (or if you don't have gradle installed you could use the gradle wrapper).
+Finally run the .jar generated to start te spring boot embedded web server (aka "tomcat el gato diablo").
 
     git clone https://github.com/hazafantasy/jhazelnut-csms-service.git
     cd jhazelnut-csms-service

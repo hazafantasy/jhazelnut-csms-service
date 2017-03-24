@@ -2,6 +2,7 @@ package csms;
 
 import csms.core.*;
 import csms.core.cloud.storage.implementation.DropBoxCloudStorage;
+import csms.core.cloud.storage.implementation.GoogleDriveCloudStorage;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -112,7 +113,7 @@ public class ApplicationConsole {
             //Print: C:\Users\hazael.mojica.garcia\JhazelnutCSMS\1\ on Windows
         }
 
-        if(true) {
+        if(false) {
             //*****************************************************************************
             //Testing JhDropBoxCloudStorage download2TempoRepo
             JhCloudStorage dropBoxCloudStorage = new DropBoxCloudStorage("dropBox1");
@@ -128,7 +129,11 @@ public class ApplicationConsole {
                     e.printStackTrace();
                 }
             }
+        }
 
+        if(true) {
+            GoogleDriveCloudStorage gDriveCloudStorage = new GoogleDriveCloudStorage("gDrive1");
+            gDriveCloudStorage.fetchFileStructure();
         }
 
     }
