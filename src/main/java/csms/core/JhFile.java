@@ -1,5 +1,7 @@
 package csms.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -20,11 +22,8 @@ public class JhFile {
      */
     private long offsetMinutes = 5L;
 
-    public JhFile(JhFile sourceFile){
-            this(sourceFile.getPath(), sourceFile.getLastEditDateTime(),
-                sourceFile.getMainSourceDriveId(), sourceFile.isDeleteCandidate,
-                sourceFile.isNewFile(), sourceFile.isFileOnTempoRepo(),
-                sourceFile.getTempoRepoPath());
+    public JhFile(String path, String mainSourceDriveId) {
+        this(path, LocalDateTime.now(), mainSourceDriveId);
     }
 
     public JhFile(String path, LocalDateTime lastEditDateTime, String mainSourceDriveId) {
@@ -38,6 +37,16 @@ public class JhFile {
                   boolean isDeleteCandidate){
         this(path, lastEditDateTime, mainSourceDriveId, isDeleteCandidate,
         false, false, "");
+    }
+
+    public JhFile(JhFile sourceFile){
+        this(sourceFile.getPath(),
+                sourceFile.getLastEditDateTime(),
+                sourceFile.getMainSourceDriveId(),
+                sourceFile.isDeleteCandidate,
+                sourceFile.isNewFile(),
+                sourceFile.isFileOnTempoRepo(),
+                sourceFile.getTempoRepoPath());
     }
 
     public JhFile(String path,
@@ -140,6 +149,19 @@ public class JhFile {
         //Compare fields and return equals value
         JhFile jhFile = (JhFile)obj;
         return this.path.equals(jhFile.getPath());
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        String json;
+        try {
+            json = mapper.writeValueAsString(this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            json = "ERROR mapping JhFile to JSON";
+        }
+        return json;
     }
 
 }

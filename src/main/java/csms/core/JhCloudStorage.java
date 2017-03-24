@@ -6,15 +6,15 @@ public abstract class JhCloudStorage {
     protected String cloudStorageId;
     protected JhFileStructure jhFileStructure;
     protected String ACCESS_TOKEN;
-    protected boolean fsFetched;
+    protected boolean isFetched;
 
     public JhCloudStorage(String cloudStorageId) {
         this.cloudStorageId = cloudStorageId;
         retrieveCloudStorageData();
     }
 
-    public boolean isFsFetched() {
-        return fsFetched;
+    public boolean isFetched() {
+        return isFetched;
     }
 
     public String getCloudStorageId() {
@@ -33,8 +33,8 @@ public abstract class JhCloudStorage {
     }
 
     public JhFileStructure getFileStructure() {
-        if(!fsFetched) {
-            fsFetched = fetchFileStructure();
+        if(!isFetched) {
+            isFetched = fetchFileStructure();
         }
         return jhFileStructure;
     }
