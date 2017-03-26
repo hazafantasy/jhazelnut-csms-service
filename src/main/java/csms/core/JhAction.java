@@ -1,5 +1,7 @@
 package csms.core;
 
+import csms.core.jhfiles.JhFile;
+
 public class JhAction {
     private JhActionType action;
     private JhFile file;

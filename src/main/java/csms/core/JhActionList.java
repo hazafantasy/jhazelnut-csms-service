@@ -1,6 +1,7 @@
 package csms.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import csms.core.jhfiles.JhFile;
 
 import java.util.ArrayList;
 import java.util.List;

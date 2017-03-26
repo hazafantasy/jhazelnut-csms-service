@@ -1,7 +1,7 @@
 package csms.model;
 
 import csms.core.JhCloudStorage;
-import csms.core.cloud.storage.implementation.DropBoxCloudStorage;
+import csms.core.cloud.storage.implementation.JhDropBoxCloudStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class User {
         List<JhCloudStorage> cloudStorageList = new ArrayList<>();
 
         //DropBox Cloud Stroage
-        cloudStorageList.add(new DropBoxCloudStorage("dropBox1"));
+        cloudStorageList.add(new JhDropBoxCloudStorage("dropBox1"));
 
         return testUser;
     }

@@ -1,17 +1,16 @@
 package csms;
 
 import csms.core.*;
-import csms.core.cloud.storage.implementation.DropBoxCloudStorage;
-import csms.core.cloud.storage.implementation.GoogleDriveCloudStorage;
+import csms.core.cloud.storage.implementation.JhDropBoxCloudStorage;
+import csms.core.cloud.storage.implementation.JhGoogleDriveCloudStorage;
+import csms.core.jhfiles.JhFile;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class ApplicationConsole {
@@ -84,7 +83,7 @@ public class ApplicationConsole {
         if(false) {
             //*****************************************************************************
             //Testing JhDropBoxCloudStorage fetching
-            JhCloudStorage dropBoxCloudStorage = new DropBoxCloudStorage("dropBox1");
+            JhCloudStorage dropBoxCloudStorage = new JhDropBoxCloudStorage("dropBox1");
             System.out.println("****************Testing JhDropBoxCloudStorage fetching***********************************");
             dropBoxCloudStorage.fetchFileStructure();
             //The output shall be the File Structure in DropBox
@@ -116,7 +115,7 @@ public class ApplicationConsole {
         if(false) {
             //*****************************************************************************
             //Testing JhDropBoxCloudStorage download2TempoRepo
-            JhCloudStorage dropBoxCloudStorage = new DropBoxCloudStorage("dropBox1");
+            JhCloudStorage dropBoxCloudStorage = new JhDropBoxCloudStorage("dropBox1");
             System.out.println("****************Testing JhTempoRepoFileManager download2TempoRepo************************");
             JhFile jhFile = new JhFile("/test0.txt", dropBoxCloudStorage.getCloudStorageId());
             jhFile = dropBoxCloudStorage.download2TempoRepo(jhFile);
@@ -132,8 +131,13 @@ public class ApplicationConsole {
         }
 
         if(true) {
-            GoogleDriveCloudStorage gDriveCloudStorage = new GoogleDriveCloudStorage("gDrive1");
+            //*****************************************************************************
+            //Testing JhGoogleDriveCloudStorage fetchFileStructure
+            System.out.println("****************Testing JhGoogleDriveCloudStorage fetchFileStructure************************");
+            JhGoogleDriveCloudStorage gDriveCloudStorage = new JhGoogleDriveCloudStorage("gDrive1");
             gDriveCloudStorage.fetchFileStructure();
+
+            System.out.println(gDriveCloudStorage.getFileStructure());
         }
 
     }

@@ -1,6 +1,8 @@
 package csms.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import csms.core.jhfiles.JhFile;
 
 public abstract class JhCloudStorage {
     protected String cloudStorageId;
@@ -59,6 +61,7 @@ public abstract class JhCloudStorage {
     @Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         String json;
         try {
             json = mapper.writeValueAsString(this);

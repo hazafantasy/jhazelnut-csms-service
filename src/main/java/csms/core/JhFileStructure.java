@@ -1,6 +1,7 @@
 package csms.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import csms.core.jhfiles.JhFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class JhFileStructure {
                 }
             } else {//This file may be a DELETE candidate
                 if(!thisFile.isNewFile()) {//Change it to Delete Candidate if this file is not new
+                    //Don't create a new file instance
                     JhFile deleteCandidateFile = new JhFile(
                             thisFile.getPath(),
                             thisFile.getLastEditDateTime(),
@@ -78,6 +80,7 @@ public class JhFileStructure {
         for(String filePath: otherFileMap.keySet()) {
             JhFile otherFile = otherFileMap.get(filePath);
             if(!otherFile.isDeleteCandidate()) {
+                //Don't create a new file instance
                 JhFile newFile = new JhFile(
                         otherFile.getPath(), otherFile.getLastEditDateTime(),
                         otherFile.getMainSourceDriveId(), otherFile.isDeleteCandidate(),

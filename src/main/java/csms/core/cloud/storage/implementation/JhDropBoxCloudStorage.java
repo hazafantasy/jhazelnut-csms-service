@@ -6,6 +6,7 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
 import csms.core.*;
+import csms.core.jhfiles.JhFile;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -13,13 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
-public class DropBoxCloudStorage extends JhCloudStorage {
+public class JhDropBoxCloudStorage extends JhCloudStorage {
 
     private DbxRequestConfig config;
     private DbxClientV2 client;
     private boolean isDBClientConfigured;
 
-    public DropBoxCloudStorage(String cloudStorageID){
+    public JhDropBoxCloudStorage(String cloudStorageID){
         super(cloudStorageID);
         isDBClientConfigured = false;
     }

@@ -1,4 +1,4 @@
-package csms.core;
+package csms.core.jhfiles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-public class JhFile {
+public abstract class JhFile {
 
     private String path;
     private LocalDateTime lastEditDateTime;
@@ -22,48 +22,48 @@ public class JhFile {
      */
     private long offsetMinutes = 5L;
 
-    public JhFile(String path, String mainSourceDriveId) {
-        this(path, LocalDateTime.now(), mainSourceDriveId);
-    }
-
-    public JhFile(String path, LocalDateTime lastEditDateTime, String mainSourceDriveId) {
-        this(path, lastEditDateTime, mainSourceDriveId,false, false,
-                false, "");
-    }
-
-    public JhFile(String path,
-                  LocalDateTime lastEditDateTime,
-                  String mainSourceDriveId,
-                  boolean isDeleteCandidate){
-        this(path, lastEditDateTime, mainSourceDriveId, isDeleteCandidate,
-        false, false, "");
-    }
-
-    public JhFile(JhFile sourceFile){
-        this(sourceFile.getPath(),
-                sourceFile.getLastEditDateTime(),
-                sourceFile.getMainSourceDriveId(),
-                sourceFile.isDeleteCandidate,
-                sourceFile.isNewFile(),
-                sourceFile.isFileOnTempoRepo(),
-                sourceFile.getTempoRepoPath());
-    }
-
-    public JhFile(String path,
-                  LocalDateTime lastEditDateTime,
-                  String mainSourceDriveId,
-                  boolean isDeleteCandidate,
-                  boolean isNewFile,
-                  boolean isFileOnTempoRepo,
-                  String tempoRepoPath) {
-        this.path = path;
-        this.lastEditDateTime = lastEditDateTime;
-        this.mainSourceDriveId = mainSourceDriveId;
-        this.isDeleteCandidate = isDeleteCandidate;
-        this.isNewFile = isNewFile;
-        this.isFileOnTempoRepo = isFileOnTempoRepo;
-        this.tempoRepoPath = tempoRepoPath;
-    }
+//    public JhFile(String path, String mainSourceDriveId) {
+//        this(path, LocalDateTime.now(), mainSourceDriveId);
+//    }
+//
+//    public JhFile(String path, LocalDateTime lastEditDateTime, String mainSourceDriveId) {
+//        this(path, lastEditDateTime, mainSourceDriveId,false, false,
+//                false, "");
+//    }
+//
+//    public JhFile(String path,
+//                  LocalDateTime lastEditDateTime,
+//                  String mainSourceDriveId,
+//                  boolean isDeleteCandidate){
+//        this(path, lastEditDateTime, mainSourceDriveId, isDeleteCandidate,
+//        false, false, "");
+//    }
+//
+//    public JhFile(JhFile sourceFile){
+//        this(sourceFile.getPath(),
+//                sourceFile.getLastEditDateTime(),
+//                sourceFile.getMainSourceDriveId(),
+//                sourceFile.isDeleteCandidate,
+//                sourceFile.isNewFile(),
+//                sourceFile.isFileOnTempoRepo(),
+//                sourceFile.getTempoRepoPath());
+//    }
+//
+//    public JhFile(String path,
+//                  LocalDateTime lastEditDateTime,
+//                  String mainSourceDriveId,
+//                  boolean isDeleteCandidate,
+//                  boolean isNewFile,
+//                  boolean isFileOnTempoRepo,
+//                  String tempoRepoPath) {
+//        this.path = path;
+//        this.lastEditDateTime = lastEditDateTime;
+//        this.mainSourceDriveId = mainSourceDriveId;
+//        this.isDeleteCandidate = isDeleteCandidate;
+//        this.isNewFile = isNewFile;
+//        this.isFileOnTempoRepo = isFileOnTempoRepo;
+//        this.tempoRepoPath = tempoRepoPath;
+//    }
 
     public boolean isNewFile() {
         return isNewFile;
@@ -122,15 +122,15 @@ public class JhFile {
      * @return
      */
     public JhFile compareJhFiles(JhFile otherFile) {
-        JhFile newFile = null;
+        JhFile newestFile = null;
         if(otherFile != null){
             if(lastEditDateTime.isAfter(otherFile.getLastEditDateTime())) {
-                newFile = new JhFile(this);
+                newestFile = this;
             } else {
-                newFile = new JhFile(otherFile);
+                newestFile = otherFile;
             }
         }
-        return newFile;
+        return newestFile;
     }
 
 
