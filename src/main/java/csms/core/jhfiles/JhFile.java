@@ -22,6 +22,10 @@ public abstract class JhFile {
      */
     private long offsetMinutes = 5L;
 
+    public JhFile() {
+        // A simple constructor for simple developers like me :P
+    }
+
 //    public JhFile(String path, String mainSourceDriveId) {
 //        this(path, LocalDateTime.now(), mainSourceDriveId);
 //    }
@@ -69,28 +73,56 @@ public abstract class JhFile {
         return isNewFile;
     }
 
+    public void setNewFile(boolean newFile) {
+        isNewFile = newFile;
+    }
+
     public String getTempoRepoPath() {
         return tempoRepoPath;
+    }
+
+    public void setTempoRepoPath(String tempoRepoPath) {
+        this.tempoRepoPath = tempoRepoPath;
     }
 
     public boolean isFileOnTempoRepo() {
         return isFileOnTempoRepo;
     }
 
+    public void setFileOnTempoRepo(boolean fileOnTempoRepo) {
+        isFileOnTempoRepo = fileOnTempoRepo;
+    }
+
     public String getPath() {
         return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public LocalDateTime getLastEditDateTime() {
         return lastEditDateTime;
     }
 
+    public void setLastEditDateTime(LocalDateTime lastEditDateTime) {
+        this.lastEditDateTime = lastEditDateTime;
+    }
+
     public String getMainSourceDriveId() {
         return mainSourceDriveId;
     }
 
+    public void setMainSourceDriveId(String mainSourceDriveId) {
+        this.mainSourceDriveId = mainSourceDriveId;
+    }
+
     public boolean isDeleteCandidate() {
         return isDeleteCandidate;
+    }
+
+    public void setDeleteCandidate(boolean deleteCandidate) {
+        isDeleteCandidate = deleteCandidate;
     }
 
     /**
@@ -133,7 +165,6 @@ public abstract class JhFile {
         return newestFile;
     }
 
-
     @Override
     public boolean equals(Object obj){
         //Check if these are same class type
@@ -163,5 +194,4 @@ public abstract class JhFile {
         }
         return json;
     }
-
 }
