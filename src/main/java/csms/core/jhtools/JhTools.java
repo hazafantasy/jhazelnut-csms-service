@@ -1,4 +1,4 @@
-package csms.core;
+package csms.core.jhtools;
 
 import com.google.api.client.util.DateTime;
 
@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class Tools {
+public class JhTools {
 
     public static LocalDateTime date2LocalDateTime(Date date) {
         return LocalDateTime.ofInstant(

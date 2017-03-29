@@ -1,9 +1,10 @@
 package csms;
 
-import csms.core.*;
-import csms.core.cloud.storage.implementation.JhDropBoxCloudStorage;
-import csms.core.cloud.storage.implementation.JhGoogleDriveCloudStorage;
-import csms.core.jhfiles.JhFile;
+import csms.core.jhcloudstorage.JhCloudStorage;
+import csms.core.jhcloudstorage.JhDropBoxCloudStorage;
+import csms.core.jhcloudstorage.JhGoogleDriveCloudStorage;
+import csms.core.jhfiles.*;
+import csms.core.jhtools.JhTempoRepoFileManager;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -13,7 +14,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-public class ApplicationConsole {
+public class ApplicationTester {
 
     public static void main(String[] args) {
 
@@ -23,13 +24,13 @@ public class ApplicationConsole {
             LocalDateTime time1 = LocalDateTime.of(2017, 04, 21, 12, 20, 30);
             LocalDateTime time2 = LocalDateTime.of(2017, 04, 21, 12, 22, 30);
             LocalDateTime time3 = LocalDateTime.of(2017, 04, 21, 12, 27, 30);
-            JhFile file1 = new JhFile("haza.txt", time1, "dropbox1", false);
-            JhFile file2 = new JhFile("haza.txt", time2, "gdrive1", false);
-            JhFile file3 = new JhFile("haza.txt", time3, "onedrive1", false);
+            JhFile file1 = new JhFileDropBox("haza.txt", time1, "dropbox1");
+            JhFile file2 = new JhFileGoogleDrive("haza.txt", time2, "gdrive1");
+            JhFile file3 = new JhFileDropBox("haza.txt", time3, "onedrive1");
 
-            System.out.println(file1.equalsInTimeRange(file2));
-            System.out.println(file1.equalsInTimeRange(file3));
-            System.out.println(file1.equalsInTimeRange(file1));
+            System.out.println(file1.equalsInTimeAndSize(file2));
+            System.out.println(file1.equalsInTimeAndSize(file3));
+            System.out.println(file1.equalsInTimeAndSize(file1));
             //Expecting to see: true false true
         }
 
@@ -42,15 +43,15 @@ public class ApplicationConsole {
             LocalDateTime time1_2 = LocalDateTime.of(2017, 04, 21, 12, 21, 30);
             LocalDateTime time2_2 = LocalDateTime.of(2017, 04, 21, 13, 22, 30);
             LocalDateTime time3_2 = LocalDateTime.of(2017, 04, 21, 14, 20, 30);
-            JhFile strucFile1 = new JhFile("identical.txt", time1_1, "base", false);
-            JhFile strucFile2 = new JhFile("test2.txt", time2_1, "base", false);
-            JhFile strucFile3 = new JhFile("test3.txt", time3_1, "base", false);
-            JhFile strucFile4 = new JhFile("file2Delete.txt", time1_1, "base", false);
-            JhFile strucFile5 = new JhFile("identical.txt", time1_2, "gdrive1", false);
-            JhFile strucFile6 = new JhFile("test2.txt", time2_2, "gdrive1", false);
-            JhFile strucFile7 = new JhFile("test3.txt", time3_2, "gdrive1", false);
-            JhFile strucFile8 = new JhFile("newGDriveFile.txt", time1_1, "gdrive1", false);
-            JhFile strucFile9 = new JhFile("newDropBoxFile.txt", time1_1, "dropbox1", false);
+            JhFile strucFile1 = new JhFileDropBox("identical.txt", time1_1, "base");
+            JhFile strucFile2 = new JhFileDropBox("test2.txt", time2_1, "base");
+            JhFile strucFile3 = new JhFileDropBox("test3.txt", time3_1, "base");
+            JhFile strucFile4 = new JhFileDropBox("file2Delete.txt", time1_1, "base");
+            JhFile strucFile5 = new JhFileDropBox("identical.txt", time1_2, "gdrive1");
+            JhFile strucFile6 = new JhFileGoogleDrive("test2.txt", time2_2, "gdrive1");
+            JhFile strucFile7 = new JhFileGoogleDrive("test3.txt", time3_2, "gdrive1");
+            JhFile strucFile8 = new JhFileGoogleDrive("newGDriveFile.txt", time1_1, "gdrive1");
+            JhFile strucFile9 = new JhFileDropBox("newDropBoxFile.txt", time1_1, "dropbox1");
 
             JhFileStructure baseFS = new JhFileStructure(strucFile1,strucFile2,strucFile3,strucFile4);
             JhFileStructure gDriveFS = new JhFileStructure(strucFile5,strucFile6,strucFile7,strucFile8);
@@ -67,13 +68,13 @@ public class ApplicationConsole {
             //newDropBoxFile.txt: "deleteCandidate":false, "newFile":true, "mainSourceDriveId":"dropbox1"
             System.out.println(baseFS);
 
-            JhActionList actions1 = gDriveFS.mergeFileStructures(baseFS);
+            JhFileActionList actions1 = gDriveFS.mergeFileStructures(baseFS);
             System.out.println("****************Testing Actions List: 1-2 drives. GDrive*********************************");
             //UPDATE - test2.txt - base
             //CREATE - newDropBoxFile.txt - dropbox1
             System.out.println(actions1);
 
-            JhActionList actions2 = dropBoxFS.mergeFileStructures(baseFS);
+            JhFileActionList actions2 = dropBoxFS.mergeFileStructures(baseFS);
             System.out.println("****************Testing Actions List: 2-2 drives. DropBox********************************");
             //UPDATE - test3.txt - gdrive1
             //CREATE - newGDriveFile.txt - gdrive1
@@ -94,7 +95,7 @@ public class ApplicationConsole {
             //Testing JhDropBoxCloudStorage createFile
             System.out.println("****************Testing JhDropBoxCloudStorage createFile*********************************");
             //true
-            JhFile testFile = getTestFile();
+            JhFile testFile = getDropBoxTestFile();
             System.out.println(dropBoxCloudStorage.createFile(testFile));
 
             //*****************************************************************************
@@ -107,9 +108,10 @@ public class ApplicationConsole {
         if(false) {
             //*****************************************************************************
             //Testing JhTempoRepoFileManager getTempoRepoPath4User
-            System.out.println("****************Testing JhTempoRepoFileManager getTempoRepoPath4User*********************");
-            System.out.println(JhTempoRepoFileManager.getTempoRepoPath4User());
-            //Print: C:\Users\hazael.mojica.garcia\JhazelnutCSMS\1\ on Windows
+//            System.out.println("****************Testing JhTempoRepoFileManager getTempoRepoPath4User*********************");
+            JhFile jhFile = new JhFileDropBox("/folderLv0/test0.txt", LocalDateTime.now(), "dropBox1");
+            System.out.println(JhTempoRepoFileManager.getTempoRepoPath4File(jhFile));
+            //Print: C:\Users\hazael.mojica.garcia\JhazelnutCSMS\1\folderLv0.txt\test0.txt on Windows
         }
 
         if(false) {
@@ -117,39 +119,89 @@ public class ApplicationConsole {
             //Testing JhDropBoxCloudStorage download2TempoRepo
             JhCloudStorage dropBoxCloudStorage = new JhDropBoxCloudStorage("dropBox1");
             System.out.println("****************Testing JhTempoRepoFileManager download2TempoRepo************************");
-            JhFile jhFile = new JhFile("/test0.txt", dropBoxCloudStorage.getCloudStorageId());
+            JhFile jhFile = new JhFileDropBox("/test0.txt", LocalDateTime.now(),
+                    dropBoxCloudStorage.getCloudStorageId());
             jhFile = dropBoxCloudStorage.download2TempoRepo(jhFile);
             System.out.println(jhFile);
-            System.out.println("Printing File content: ");
             if(jhFile != null) {
+                System.out.println("Printing File content: ");
                 try (Stream<String> stream = Files.lines(Paths.get(jhFile.getTempoRepoPath()))) {
                     stream.forEach(System.out::println);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            } else {
+                System.out.println("File is null");
             }
         }
 
-        if(true) {
+        if(false) {
             //*****************************************************************************
             //Testing JhGoogleDriveCloudStorage fetchFileStructure
             System.out.println("****************Testing JhGoogleDriveCloudStorage fetchFileStructure************************");
             JhGoogleDriveCloudStorage gDriveCloudStorage = new JhGoogleDriveCloudStorage("gDrive1");
             gDriveCloudStorage.fetchFileStructure();
-
             System.out.println(gDriveCloudStorage.getFileStructure());
+        }
+
+        if(false) {
+            //*****************************************************************************
+            //Testing JhGoogleDriveCloudStorage createFile
+            System.out.println("****************Testing JhGoogleDriveCloudStorage createFile*****************************");
+            JhGoogleDriveCloudStorage gDriveCloudStorage = new JhGoogleDriveCloudStorage("gDrive1");
+            JhFileGoogleDrive testFile = (JhFileGoogleDrive) getGoogleDriveTestFile();
+            //Parent Folder is root Folder
+            testFile.setGoogleDriveParentFolderId(gDriveCloudStorage.getJhDriveFolderId());
+            //true
+            System.out.println(gDriveCloudStorage.createFile(testFile));
+
+            //*****************************************************************************
+            //Testing JhGoogleDriveCloudStorage deleteFile
+            System.out.println("****************Testing JhGoogleDriveCloudStorage deleteFile*****************************");
+            //true
+            System.out.println(gDriveCloudStorage.deleteFile(testFile));
+        }
+
+        if(false) {
+            //*****************************************************************************
+            //Testing JhGoogleDriveCloudStorage download2TempoRepo
+            System.out.println("****************Testing JhGoogleDriveCloudStorage download2TempoRepo**********************");
+            JhGoogleDriveCloudStorage gDriveCloudStorage = new JhGoogleDriveCloudStorage("gDrive1");
+            gDriveCloudStorage.fetchFileStructure();
+            JhFileStructure fileStructure = gDriveCloudStorage.getFileStructure();
+            JhFile jhFile = fileStructure.getFiles().get("/testLv0.txt");
+            if(jhFile != null) {
+                JhFile downloadedFile = gDriveCloudStorage.download2TempoRepo(jhFile);
+                System.out.println(jhFile);
+                if(downloadedFile != null) {
+                    System.out.println("Printing File content: ");
+                    try (Stream<String> stream = Files.lines(Paths.get(downloadedFile.getTempoRepoPath()))) {
+                        stream.forEach(System.out::println);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("File is null");
+                }
+            }
         }
 
     }
 
-    public static JhFile getTestFile(){
+    public static JhFile getDropBoxTestFile(){
         String tempoRepoFilePath = "testLOLFile.txt";
         String testFilePath = "/" + tempoRepoFilePath;
         JhFile testFile = null;
         try {
             Path path = Paths.get(tempoRepoFilePath);
-            testFile = new JhFile(testFilePath, LocalDateTime.now(), "test",
-                        false, false, true, tempoRepoFilePath);
+            testFile = new JhFileDropBox();
+            testFile.setPath(testFilePath);
+            testFile.setLastEditDateTime(LocalDateTime.now());
+            testFile.setSourceCloudStorageId("test");
+            testFile.setDeleteCandidate(false);
+            testFile.setNewFile(false);
+            testFile.setFileOnTempoRepo(true);
+            testFile.setTempoRepoPath(tempoRepoFilePath);
             Files.createFile(path);
         } catch (FileAlreadyExistsException exExist){
             System.out.println(testFilePath + " already exist. Everything ok");
@@ -159,6 +211,19 @@ public class ApplicationConsole {
         }
 
         return testFile;
+    }
+
+    public static JhFile getGoogleDriveTestFile() {
+        JhFile dBFile = getDropBoxTestFile();
+        JhFileGoogleDrive gDFile = new JhFileGoogleDrive();
+        gDFile.setPath(dBFile.getPath());
+        gDFile.setLastEditDateTime(dBFile.getLastEditDateTime());
+        gDFile.setSourceCloudStorageId(dBFile.getSourceCloudStorageId());
+        gDFile.setDeleteCandidate(dBFile.isDeleteCandidate());
+        gDFile.setNewFile(dBFile.isNewFile());
+        gDFile.setFileOnTempoRepo(dBFile.isFileOnTempoRepo());
+        gDFile.setTempoRepoPath(dBFile.getTempoRepoPath());
+        return gDFile;
     }
 
 }

@@ -1,7 +1,7 @@
 package csms.model;
 
-import csms.core.JhCloudStorage;
-import csms.core.cloud.storage.implementation.JhDropBoxCloudStorage;
+import csms.core.jhcloudstorage.JhCloudStorage;
+import csms.core.jhcloudstorage.JhDropBoxCloudStorage;
 
 import java.util.ArrayList;
 import java.util.List;

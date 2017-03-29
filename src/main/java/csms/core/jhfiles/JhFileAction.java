@@ -1,11 +1,9 @@
-package csms.core;
+package csms.core.jhfiles;
 
-import csms.core.jhfiles.JhFile;
-
-public class JhAction {
+public class JhFileAction {
     private JhActionType action;
     private JhFile file;
-    public JhAction(JhActionType action, JhFile file) {
+    public JhFileAction(JhActionType action, JhFile file) {
         this.setAction(action);
         this.setFile(file);
     }

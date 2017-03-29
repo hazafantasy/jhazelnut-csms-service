@@ -1,12 +1,15 @@
-package csms.core.cloud.storage.implementation;
+package csms.core.jhcloudstorage;
 
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.*;
-import csms.core.*;
 import csms.core.jhfiles.JhFile;
+import csms.core.jhfiles.JhFileDropBox;
+import csms.core.jhfiles.JhFileStructure;
+import csms.core.jhtools.JhTempoRepoFileManager;
+import csms.core.jhtools.JhTools;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -57,8 +60,15 @@ public class JhDropBoxCloudStorage extends JhCloudStorage {
                 for (Metadata metadata : result.getEntries()) {
                     if(metadata instanceof FileMetadata) {
                         FileMetadata fileMetadata = (FileMetadata) metadata;
-                        LocalDateTime lastEditDateTime = Tools.date2LocalDateTime(fileMetadata.getServerModified());
-                        JhFile jhFile = new JhFile(fileMetadata.getPathLower(), lastEditDateTime, cloudStorageId);
+                        LocalDateTime lastEditDateTime = JhTools.date2LocalDateTime(fileMetadata.getServerModified());
+                        JhFileDropBox jhFile = new JhFileDropBox();
+                        jhFile.setPath(fileMetadata.getPathLower());
+                        jhFile.setLastEditDateTime(lastEditDateTime);
+                        jhFile.setSize(fileMetadata.getSize());
+                        jhFile.setSourceCloudStorageId(cloudStorageId);
+                        jhFile.setSourceCloudStorage(this);
+                        //TODO: Get DropBox mimetype
+                        //jhFile.setMimeType("");
                         jhFileStructure.addJhFile(jhFile);
                     } else if(metadata instanceof FolderMetadata) {
                         //Recursively call for this folder JhFileStructure
@@ -92,13 +102,22 @@ public class JhDropBoxCloudStorage extends JhCloudStorage {
             return false;
         }
 
+        dropBoxPath = file2Create.getPath();
         if(file2Create.isFileOnTempoRepo()) {
             tempoRepoPath = file2Create.getTempoRepoPath();
-            dropBoxPath = file2Create.getPath();
         } else {
-            tempoRepoPath = "";
-            dropBoxPath = "";
-            //Find a way to download the file
+            //Download the File 2 Tempo Repo
+            JhCloudStorage jhCloudStorage = file2Create.getSourceCloudStorage();
+            if(jhCloudStorage == null) {
+                System.err.println("No Source Cloud Storage registered");
+                return false;
+            }
+            JhFile jhFileDownloaded = jhCloudStorage.download2TempoRepo(file2Create);
+            if(jhFileDownloaded == null){
+                System.err.println("An error happening downloading file 2 Tempo Repo");
+                return false;
+            }
+            tempoRepoPath = jhFileDownloaded.getTempoRepoPath();
         }
 
         try (InputStream in = new FileInputStream(tempoRepoPath)) {
@@ -133,7 +152,7 @@ public class JhDropBoxCloudStorage extends JhCloudStorage {
 
     @Override
     public JhFile download2TempoRepo(JhFile file2Download) {
-        JhFile fileJustDownloaded = null;
+        JhFileDropBox fileJustDownloaded = null;
         String filePathOnTempoRepo;
         String dropBoxFilePath;
         Path pathOnTempoRepo;
@@ -147,7 +166,7 @@ public class JhDropBoxCloudStorage extends JhCloudStorage {
         }
 
         dropBoxFilePath = file2Download.getPath();
-        filePathOnTempoRepo = JhTempoRepoFileManager.getTempoRepoPath4User() + dropBoxFilePath;
+        filePathOnTempoRepo = JhTempoRepoFileManager.getTempoRepoPath4File(file2Download);
         pathOnTempoRepo = Paths.get(filePathOnTempoRepo);
 
         if(Files.exists(pathOnTempoRepo)) {
@@ -179,13 +198,15 @@ public class JhDropBoxCloudStorage extends JhCloudStorage {
             outputStream.close();
 
             //Create the JhFile with the metadata
-            fileJustDownloaded = new JhFile(
-                    dropBoxFilePath,
-                    Tools.date2LocalDateTime(fileMetadata.getServerModified()),
-                    cloudStorageId,
-                    false, false, true,
-                    filePathOnTempoRepo
-            );
+            fileJustDownloaded = new JhFileDropBox();
+            fileJustDownloaded.setPath(dropBoxFilePath);
+            fileJustDownloaded.setLastEditDateTime(
+                    JhTools.date2LocalDateTime(fileMetadata.getServerModified()));
+            fileJustDownloaded.setSourceCloudStorageId(cloudStorageId);
+            fileJustDownloaded.setFileOnTempoRepo(true);
+            fileJustDownloaded.setNewFile(false);
+            fileJustDownloaded.setDeleteCandidate(false);
+            fileJustDownloaded.setTempoRepoPath(filePathOnTempoRepo);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
